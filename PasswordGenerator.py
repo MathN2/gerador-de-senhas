@@ -1,3 +1,7 @@
+import random
+import string
+import pyperclip
+
 options = {
     'upper': False,
     'lower': False,
@@ -8,9 +12,9 @@ options = {
 def config_senha(options):
     while True:
         try:
-            num_carac = int(input('\nDigite quantos caracteres terá sua senha. (8 - 20)'))
-            if not 8 <= num_carac <= 20:
-                print('Valor invalido. O numero de caracteres deve estar entre 8 e 20')
+            num_carac = int(input('\nDigite quantos caracteres terá sua senha. (4 - 20)\n'))
+            if not 4 <= num_carac <= 20:
+                print('Valor invalido. O numero de caracteres deve estar entre 4 e 20')
                 continue
             else:
                 break
@@ -19,7 +23,7 @@ def config_senha(options):
             continue
     
     while True:
-        print('Selecione uma opcao para swita-la')
+        print('Escolha o tipo de senha que deseja usar.')
         print('*'*40)
         print('  Configurações da Senha:')
 
@@ -49,9 +53,6 @@ def config_senha(options):
         
 
 def generator(options):
-    import random
-    import string
-
     options, num_carac = config_senha(options)
     active_opt = {k: v for k, v in options.items() if v}
     tipos_ativos = list(active_opt)
@@ -67,18 +68,44 @@ def generator(options):
     for tipo in active_opt:
         char = random.choice(char_set[tipo])
         senha.append(char)
-        print(senha, len(senha))
+        # print(senha, len(senha))
     
     while len(senha) < num_carac:
         tipo_aleatorio = random.choice(tipos_ativos)
-        print(tipo_aleatorio)
+        # print(tipo_aleatorio)
         char = random.choice(char_set[tipo_aleatorio])
 
         senha.append(char)
-        print(senha, len(senha))
+        # print(senha, len(senha))
 
     random.shuffle(senha)    
     senha_final = ''.join(senha)
-    print(senha_final, len(senha_final))
+    return senha_final
 
-generator(options)
+
+def interface():
+    # Nome do App 
+    print('┏'+ '━'*20+ '┓')
+    print('┃'+ 'Gerador de Senhas'.center(20, ' ')+'┃')
+    print('┗'+ '━'*20+ '┛')
+
+    # Opções
+    senha = generator(options)
+    
+    # Output
+    print(f'Sua senha é:')
+    print('┏'+ '━'*22+ '┓')
+    print('┃'+senha.center(22, " ")+'┃')
+    print('┗'+ '━'*22+ '┛')
+
+    # Copiar senha
+    copy = input('Deseja copiar a senha? (S/N)\n').strip().upper()
+    if copy in ['S', 'SIM']:
+        pyperclip.copy(senha)
+        print(f'Senha (copiada) para o clipboard: {senha}')
+    elif copy in ['N', 'NAO', 'NÃO']:
+        return
+    else:
+        print('Valor invalido. Por favor digite "S" para Sim ou "N" para Não.')
+
+interface()
